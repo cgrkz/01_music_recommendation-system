@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhythm Radar | Smart Music Recommendations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <i class="fas fa-radar logo-icon"></i>
+                <span class="logo-text">Rhythm Radar</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Discover Your Next Favorite Song</h1>
+            <p>Rhythm Radar analyzes your Spotify or YouTube Music playlists and recommends new tracks that match your musical taste.</p>
+        </section>
+
+        <section class="main-section">
+            <div class="platform-selector">
+                <button class="platform-btn spotify active" data-platform="spotify">
+                    <i class="fab fa-spotify"></i> Spotify
+                </button>
+                <button class="platform-btn youtube" data-platform="youtube">
+                    <i class="fab fa-youtube"></i> YouTube Music
+                </button>
+            </div>
+
+            <div class="playlist-form-container">
+                <!-- Spotify Content -->
+                <div id="spotify-content" class="platform-content active">
+                    <div class="info-alert">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="info-alert-content">
+                            <strong>Pro Tip:</strong> For private Spotify playlists, login with your Spotify account first to ensure access.
+                        </div>
+                    </div>
+                    
+                    <button id="spotify-login" class="btn btn-spotify w-100">
+                        <i class="fab fa-spotify"></i> Login with Spotify
+                    </button>
+                    
+                    <form id="spotify-form" class="playlist-form">
+                        <div class="form-group">
+                            <label for="spotify-url" class="form-label">Spotify Playlist URL</label>
+                            <input type="text" class="form-control" id="spotify-url" 
+                                placeholder="https://open.spotify.com/playlist/..." required>
+                            <div class="form-text">Paste your Spotify playlist link here. Playlist must have at least 10 tracks.</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="spotify-num-recommendations" class="form-label">Number of Recommendations</label>
+                            <input type="number" class="form-control" id="spotify-num-recommendations" min="1" max="50" value="10" required>
+                            <div class="form-text">How many song recommendations do you want? (1-50)</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-spotify w-100">
+                            <i class="fas fa-music"></i> Get Spotify Recommendations
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- YouTube Music Content -->
+                <div id="youtube-content" class="platform-content">
+                    <form id="youtube-form" class="playlist-form">
+                        <div class="form-group">
+                            <label for="youtube-url" class="form-label">YouTube Music Playlist URL</label>
+                            <input type="text" class="form-control" id="youtube-url" 
+                                placeholder="https://music.youtube.com/playlist?list=..." required>
+                            <div class="form-text">Paste your YouTube Music playlist link here. Playlist must have at least 10 tracks.</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="youtube-num-recommendations" class="form-label">Number of Recommendations</label>
+                            <input type="number" class="form-control" id="youtube-num-recommendations" min="1" max="50" value="10" required>
+                            <div class="form-text">How many song recommendations do you want? (1-50)</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-youtube w-100">
+                            <i class="fas fa-music"></i> Get YouTube Music Recommendations
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="loader"></div>
+                <div class="loading-text">Analyzing your musical taste...</div>
+                <div class="loading-subtext">We're processing your playlist and finding the perfect recommendations. This may take a moment.</div>
+            </div>
+
+            <div id="error-container" class="error-container"></div>
+
+            <div id="results-container" class="results-container">
+                <div class="playlist-info-card">
+                    <div class="playlist-header">
+                        <div id="playlist-image" class="playlist-image">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div class="playlist-details">
+                            <h2 id="playlist-name">Playlist Name</h2>
+                            <p id="playlist-meta">by <span id="playlist-owner">Owner</span> • <span id="playlist-track-count">0</span> tracks</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-bar"></i> Playlist Analysis</h2>
+                    </div>
+                    <div class="card-body">
+                        <div id="playlist-stats" class="playlist-stats"></div>
+                    </div>
+                </div>
+                
+                <div class="analysis-card recommendations-container">
+                    <div class="card-header">
+                        <h2><i class="fas fa-headphones"></i> Recommended Songs</h2>
+                    </div>
+                    <div class="card-body">
+                        <div id="recommendations-grid" class="recommendations-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Rhythm Radar | A smart music recommendation engine</p>
+                <p>Created with <i class="fas fa-heart" style="color: #ff6b6b;"></i> for music lovers</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
